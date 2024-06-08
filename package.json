@@ -1,0 +1,12 @@
+{
+  "name": "red-alerts",
+  "version": "1.0.0",
+  "dependencies": {
+    "@discordjs/voice": "^0.16.0",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "libsodium-wrappers": "^0.7.13",
+    "puppeteer": "^21.7.0",
+    "ws": "^8.14.2"
+  }
+}
