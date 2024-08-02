@@ -55,19 +55,19 @@ module.exports = {data: new SlashCommandBuilder()
         const sentMessage = await alertChannel.send({ embeds: [temp, alert]});
         
         //edit reply to interaction
-        const id = "2009"
-        const begin = new Date();
-        await takeScreenshot(id);
-        const end = new Date();
-        console.log("Time to create image - ", (end - begin) / 1000);
-        const file  = new AttachmentBuilder(`${id}.png`); 
+        // const id = "2009"
+        // const begin = new Date();
+        // await takeScreenshot(id);
+        // const end = new Date();
+        // console.log("Time to create image - ", (end - begin) / 1000);
+        // const file  = new AttachmentBuilder(`${id}.png`);
 
-        alert.setImage(`attachment://${id}.png`);
-        await sentMessage.edit({ embeds: [temp, alert], files: [file] });
+        //alert.setImage(`attachment://${id}.png`);
+        //await sentMessage.edit({ embeds: [temp, alert], files: [file] });
         await sentMessage.react("🚨");
-
-
-        //delete image
-        fs.unlinkSync(`./${id}.png`);
+        //
+        //
+        // //delete image
+        // fs.unlinkSync(`./${id}.png`);
     },
 };

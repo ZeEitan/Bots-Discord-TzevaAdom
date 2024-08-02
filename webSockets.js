@@ -1,9 +1,9 @@
-const { EmbedBuilder, AttachmentBuilder} = require("discord.js");
+const { EmbedBuilder} = require("discord.js");
 const WebSocket = require("ws");
 const fs = require("node:fs");
 require('./data/data.js');
 
-const { takeScreenshot } = require("./utils/takeScreenshot.js");
+//const { takeScreenshot } = require("./utils/takeScreenshot.js");
 
 let client;
 
@@ -16,15 +16,14 @@ input:
 output:
     the alert message
 */
-async function buildMessage(alertType, alertAreas, alertCities){
-    console.log("In build message");
-    return new EmbedBuilder()
-        .setAuthor({ name: `${alertType['he'][0]}   •`, iconURL: alertType['he'][1]})
-        .setTitle(alertAreas.join(", "))
-        .setDescription(alertCities.join(", "))
-        .setColor(0xf4a743)
-        .setTimestamp();
-}
+// async function buildMessage(alertType, alertAreas, alertCities){
+//     return new EmbedBuilder()
+//         .setAuthor({ name: `${alertType['he'][0]}   •`, iconURL: alertType['he'][1]})
+//         .setTitle(alertAreas.join(", "))
+//         .setDescription(alertCities.join(", "))
+//         .setColor(0xf4a743)
+//         .setTimestamp();
+// }
 
 /*
 the websocket event handler
@@ -77,28 +76,28 @@ input:
 output:
     the alerts history
 */
-async function fetchAlertsHistory() {
-    return new Promise((resolve, reject) => {
-        fetch("https://api.tzevaadom.co.il/alerts-history/?")
-            .then(async (response) => {
-                    try {
-                        if (!response.ok) {
-                            throw new Error(`API request failed with status ${response.status}`);
-                        }
-
-                        const responseJson = await response.json();
-                        resolve(responseJson);
-
-                    } catch (error) {
-                        reject(error);
-                    }
-            })
-            .catch(error => {
-                console.error("Error fetching alerts:", error);
-                reject(error);
-            });
-    });
-}
+// async function fetchAlertsHistory() {
+//     return new Promise((resolve, reject) => {
+//         fetch("https://api.tzevaadom.co.il/alerts-history/?")
+//             .then(async (response) => {
+//                     try {
+//                         if (!response.ok) {
+//                             Throw new Error(`API request failed with status ${response.status}`);
+//                         }
+//
+//                         const responseJson = await response.json();
+//                         resolve(responseJson);
+//
+//                     } catch (error) {
+//                         reject(error);
+//                     }
+//             })
+//             .catch(error => {
+//                 console.error("Error fetching alerts:", error);
+//                 reject(error);
+//             });
+//     });
+// }
 
 /*
 send the message to the alert channel
@@ -119,34 +118,37 @@ async function sendMessage(alertMessage){
             //let alert = 
             console.log("Sending alert to channel:", channelId)
             sentAlerts.push(await channel.send({ embeds: [alertMessage] })); // send the alert message
-            //sentAlerts.push(alert); // add the alert to the sent alerts
+            //sentAlerts.push(alert); // add the alert to the sentAlerts
         } catch (e){
-            //console.error(`Unknown channel ${channelId}`);
             console.error(e);
         }
     }
 
-    fetchAlertsHistory()
-        .then(async alerts => {
-            //console.log("Alerts:", alerts);
-            const alertId = alerts[0]["id"];
-            console.log("Alert Id: ", alertId);
+    for(let alert in sentAlerts){
+        await alert.react("🚨");
+    }
 
-            await takeScreenshot(alertId); // take a screenshot of the alert
-            const file  = new AttachmentBuilder(`${alertId}.png`);
-            alertMessage.setImage(`attachment://${alertId}.png`);
-            
-            for(let alert of sentAlerts){ // edit the alert message to include the screenshot
-                await alert.edit({ embeds: [alertMessage], files: [file] });
-                await alert.react("🚨");
-            }
-
-            fs.unlinkSync(`${alertId}.png`);
-        })
-
-        .catch(error => {
-            console.error("Error:", error);
-        });
+    // fetchAlertsHistory()
+    //     .then(async alerts => {
+    //         //console.log("Alerts:", alerts);
+    //         const alertId = alerts[0]["id"];
+    //         console.log("Alert Id: ", alertId);
+    //
+    //         // await takeScreenshot(alertId); // take a screenshot of the alert
+    //         // const file  = new AttachmentBuilder(`${alertId}.png`);
+    //         // alertMessage.setImage(`attachment://${alertId}.png`);
+    //
+    //         for(let alert of sentAlerts){ // edit the alert message to include the screenshot
+    //             await alert.edit({ embeds: [alertMessage], files: [file] });
+    //             await alert.react("🚨");
+    //         }
+    //
+    //         //fs.unlinkSync(`${alertId}.png`);
+    //     })
+    //
+    //     .catch(error => {
+    //         console.error("Error:", error);
+    //     });
 }
 
 
